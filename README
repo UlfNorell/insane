@@ -1,0 +1,21 @@
+
+Toy implementation of Insanely Dependent Types
+
+Features
+
+  - Insane pi-types:
+
+      [x1 : A1, x2 : A2, .., xn : An] -> B
+
+    All xi are in scope in the Ai's (and in B of course). Applications of
+    insane functions must be fully applied.
+
+  - Everything is mutually recursive
+
+  - Simple Agda-like syntax
+
+Limitations
+
+  - No implicit arguments
+  - Function types and Set are not terms
+  - No indexed datatypes
