@@ -1,0 +1,16 @@
+*.o
+*.hi
+typechecker/tc
+.swp
+*.swp
+_darcs
+.darcsignore
+typechecker/Syntax/Abs.hs
+typechecker/Syntax/ErrM.hs
+typechecker/Syntax/Layout.hs
+typechecker/Syntax/Lex.hs
+typechecker/Syntax/Lex.x
+typechecker/Syntax/Par.hs
+typechecker/Syntax/Par.info
+typechecker/Syntax/Par.y
+typechecker/Syntax/Print.hs
