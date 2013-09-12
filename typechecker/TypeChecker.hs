@@ -64,8 +64,11 @@ buildSignature ds =
         name (Abs.FunDef i _ _)   = identToName i
         name (Abs.DataDecl i _ _) = identToName i
 
-        telePi :: [Abs.Binding] -> Abs.Expr -> Abs.Expr
-        telePi tel e = foldr (\ (Abs.Bind x t) s -> Abs.Pi x t s) e tel
+        telePi :: [Abs.TelBinding] -> Abs.Expr -> Abs.Expr
+        telePi tel e = foldr bind e tel -- (\ (Abs.Bind x t) s -> Abs.Pi x t s) e tel
+          where
+            bind (Abs.PiBind (Abs.Bind x t)) s = Abs.Pi x t s
+            bind (Abs.TelBind tel) s = Abs.RPi tel s
 
         constrWithArity :: Abs.Constr -> Constructor
         constrWithArity (Abs.Constr c t) = Constr (identToName c) $ arity t
@@ -75,7 +78,7 @@ buildSignature ds =
                 arity (Abs.RPi (Abs.Tel tel) b) = length tel + arity b
                 arity _                         = 0
 
-        buildConstr :: [Abs.Binding] -> Abs.Constr -> TC Signature
+        buildConstr :: [Abs.TelBinding] -> Abs.Constr -> TC Signature
         buildConstr tel (Abs.Constr x e) = do
             let e' = telePi tel e
                 c  = identToName x

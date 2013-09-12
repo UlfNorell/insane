@@ -10,10 +10,14 @@ separator Decl ";";
 
 TypeSig.  Decl ::= Ident ":" Expr;
 FunDef.   Decl ::= Ident [Pattern1] "=" Expr;
-DataDecl. Decl ::= "data" Ident [Binding] ":" "Set" "where" "{" [Constr] "}";
+DataDecl. Decl ::= "data" Ident [TelBinding] ":" "Set" "where" "{" [Constr] "}";
 
 Constr. Constr ::= Ident ":" Expr;
 separator Constr ";";
+
+TelBind. TelBinding ::= Telescope;
+PiBind.  TelBinding ::= Binding;
+separator TelBinding "";
 
 Bind. Binding ::= "(" Ident ":" Expr ")";
 separator Binding "";
