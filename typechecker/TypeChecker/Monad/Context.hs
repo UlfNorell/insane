@@ -10,6 +10,7 @@ import TypeChecker.Monad
 import TypeChecker.Monad.Heap
 import TypeChecker.DeBruijn
 import Utils
+import Control.Monad
 
 getContext :: TC Context
 getContext = asks envContext

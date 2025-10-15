@@ -2,9 +2,10 @@
 module TypeChecker.Monad.Heap where
 
 import Control.Applicative
+import Control.Monad
 import Control.Monad.Reader
 import Control.Monad.State
-import Control.Monad.Error
+import Control.Monad.Except
 import qualified Data.Map as Map
 import Data.Typeable
 
@@ -40,8 +41,8 @@ heapLookup = aux undefined
             where
                 p = toRawPtr ptr
 
-                err Nothing s  = fail s
-                err (Just x) _ = return x
+                err Nothing s  = Left s
+                err (Just x) _ = Right x
 
 heapUpdate :: Pointer ptr a => ptr -> Closure a -> Heap -> Heap
 heapUpdate ptr cl = Map.insert p (HpObj cl)

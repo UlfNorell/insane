@@ -4,7 +4,7 @@ module TypeChecker.Force where
 
 import Control.Applicative
 import Control.Monad.Trans
-import Control.Monad.Error
+import Control.Monad.Except
 import Data.Traversable
 import qualified Data.Map as Map
 

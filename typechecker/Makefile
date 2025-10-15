@@ -6,7 +6,8 @@ unwanted = $(patsubst %,Syntax/%.hs,Skel Test)
 
 src_files = $(filter-out $(unwanted),$(shell find . -name '*hs')) $(shell find . -name '*hs-boot')
 
-ghc_flags = -fwarn-incomplete-patterns -Werror
+ghc_flags = -fwarn-incomplete-patterns
+# -Werror # Fails because of LANGUAGE OverlappingInstances
 
 default : tc
 

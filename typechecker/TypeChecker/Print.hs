@@ -2,7 +2,8 @@
 
 module TypeChecker.Print where
 
-import Control.Monad.Error
+import Prelude hiding ((<>))
+import Control.Monad.Except
 import Control.Applicative
 import qualified Text.PrettyPrint as PP
 

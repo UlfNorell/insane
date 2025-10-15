@@ -79,6 +79,9 @@ instance Monoid Progress where
     mappend p NoProgress            = p
     mappend YesProgress YesProgress = YesProgress
 
+instance Semigroup Progress where
+    (<>) = mappend
+
 whenProgress :: Monad m => Progress -> m a -> m ()
 whenProgress YesProgress m = m >> return ()
 whenProgress NoProgress  m = return ()
@@ -133,6 +136,9 @@ instance Monoid a => Monoid (Match a) where
     mappend MaybeMatch _ = MaybeMatch
     mappend _ MaybeMatch = MaybeMatch
     mappend (YesMatch ts) (YesMatch ss) = YesMatch $ ts `mappend` ss
+
+instance Monoid a => Semigroup (Match a) where
+    (<>) = mappend
 
 instance Functor Match where
     fmap f (YesMatch x) = YesMatch $ f x

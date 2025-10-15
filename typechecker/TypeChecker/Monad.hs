@@ -3,10 +3,11 @@
 
 module TypeChecker.Monad where
 
+import Control.Monad
 import Control.Applicative
 import Control.Monad.State
 import Control.Monad.Reader
-import Control.Monad.Error
+import Control.Monad.Except
 import Data.Map as Map
 import Data.Dynamic
 
@@ -121,25 +122,24 @@ data TCError = Fail String
 instance Show TCError where
     show (Fail s) = "fail: " ++ s
 
-instance Error TCError where
-    noMsg  = Fail ""
-    strMsg = Fail
-
 ---------------------------------------------------------------------------
 -- * The Monad
 ---------------------------------------------------------------------------
 
-newtype TC a = TC { unTC :: ReaderT TCEnv (ErrorT TCError (StateT TCState IO)) a }
+newtype TC a = TC { unTC :: ReaderT TCEnv (ExceptT TCError (StateT TCState IO)) a }
     deriving (Functor, MonadReader TCEnv, MonadState TCState, MonadError TCError, MonadIO, Monad)
 
 instance Applicative TC where
   pure  = return
   (<*>) = ap
 
+instance MonadFail TC where
+  fail = throwError . Fail
+
 runTC :: TC a -> IO (Either TCError a)
 runTC (TC m) =
     flip evalStateT initState $
-    runErrorT                 $
+    runExceptT                $
     flip runReaderT emptyEnv  $
     m
 

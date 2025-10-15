@@ -3,7 +3,9 @@
 module TypeChecker where
 
 import Control.Applicative
-import Control.Monad.Error
+import Control.Monad
+import Control.Monad.Except
+import Control.Monad.IO.Class
 
 import qualified Data.Map as Map
 import Data.List
