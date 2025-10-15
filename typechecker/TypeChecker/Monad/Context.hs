@@ -10,6 +10,7 @@ import TypeChecker.Monad
 import TypeChecker.Monad.Heap
 import TypeChecker.DeBruijn
 import Utils
+import Control.Monad
 
 getContext :: TC Context
 getContext = asks envContext
@@ -31,13 +32,13 @@ extendContextTel tel = withContext (TBind (reverse tel) :)
 (!) :: Context -> Name -> Maybe (DeBruijnIndex, DeBruijnIndex, Type)
 ctx ! x = look 0 ctx
     where
-	look n (VBind y t : ctx)
-	    | x == y    = return (n, n + 1, t)
-	    | otherwise = look (n + 1) ctx
+        look n (VBind y t : ctx)
+            | x == y    = return (n, n + 1, t)
+            | otherwise = look (n + 1) ctx
         look n (TBind tel : ctx) =
           lookTel n n tel `mplus` look n' ctx
           where n' = n + genericLength tel
-	look _ [] = fail ""
+        look _ [] = fail ""
 
         lookTel n m (RBind y t : tel)
           | x == y    = return (n, m, t)
@@ -48,8 +49,8 @@ lookupContext :: Name -> TC (DeBruijnIndex, Type)
 lookupContext x = do
     ctx <- getContext
     case ctx ! x of
-	Just (n, m, t) -> (,) n <$> raiseBy m t
-	Nothing	       -> fail $ "Unbound variable: " ++ x
+        Just (n, m, t) -> (,) n <$> raiseBy m t
+        Nothing        -> fail $ "Unbound variable: " ++ x
 
 flattenContext :: Context -> [(Name, Type)]
 flattenContext = concatMap f
@@ -62,10 +63,10 @@ getVarName n = do
     ctx <- getContext
     fst <$> (ctx ! n)
     where
-	cxt ! n
-	    | len <= n  = fail $ "deBruijn index out of range " ++ show n ++ " in " ++ show xs
-	    | otherwise = return $ xs !! fromIntegral n
-	    where
-		len = fromIntegral $ length xs
+        cxt ! n
+            | len <= n  = fail $ "deBruijn index out of range " ++ show n ++ " in " ++ show xs
+            | otherwise = return $ xs !! fromIntegral n
+            where
+                len = fromIntegral $ length xs
                 xs  = flattenContext cxt
 

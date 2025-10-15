@@ -3,7 +3,9 @@
 module TypeChecker where
 
 import Control.Applicative
-import Control.Monad.Error
+import Control.Monad
+import Control.Monad.Except
+import Control.Monad.IO.Class
 
 import qualified Data.Map as Map
 import Data.List
@@ -238,7 +240,7 @@ checkPattern p a ret =
         apps s (t:ts) = do
             st <- evaluated (App s t)
             apps st ts
-        
+
 
 isType :: Abs.Expr -> TC Type
 isType e = suspend (isType' e)
