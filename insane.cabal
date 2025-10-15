@@ -1,0 +1,41 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.38.1.
+--
+-- see: https://github.com/sol/hpack
+
+name:           insane
+version:        0.0.0
+build-type:     Simple
+
+executable insane
+  main-is: Main.hs
+  other-modules:
+      Syntax.Abs
+      Syntax.ErrM
+      Syntax.Internal
+      Syntax.Layout
+      Syntax.Lex
+      Syntax.Par
+      Syntax.Print
+      TypeChecker
+      TypeChecker.DeBruijn
+      TypeChecker.Force
+      TypeChecker.Monad
+      TypeChecker.Monad.Context
+      TypeChecker.Monad.Heap
+      TypeChecker.Monad.Signature
+      TypeChecker.Print
+      TypeChecker.Reduce
+      Utils
+      Utils.Monad
+      Paths_insane
+  hs-source-dirs:
+      typechecker
+  build-depends:
+      array
+    , base
+    , containers
+    , mtl
+    , pretty
+  default-language: GHC2021

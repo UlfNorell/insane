@@ -1,0 +1,14 @@
+name: insane
+
+executable:
+  main: Main.hs
+  source-dirs: typechecker
+
+dependencies:
+- base
+- array
+- containers
+- mtl
+- pretty
+
+language: GHC2021
