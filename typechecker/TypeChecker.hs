@@ -238,7 +238,7 @@ checkPattern p a ret =
         apps s (t:ts) = do
             st <- evaluated (App s t)
             apps st ts
-        
+
 
 isType :: Abs.Expr -> TC Type
 isType e = suspend (isType' e)

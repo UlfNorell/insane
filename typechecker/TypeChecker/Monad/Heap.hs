@@ -19,8 +19,8 @@ import Utils.Monad
 typeOfCl :: Typeable a => Closure a -> TypeRep
 typeOfCl = typeOf . unCl
     where
-	unCl :: Closure a -> a
-	unCl = undefined
+        unCl :: Closure a -> a
+        unCl = undefined
 
 ---------------------------------------------------------------------------
 -- * Heap manipulation
@@ -29,24 +29,24 @@ typeOfCl = typeOf . unCl
 heapLookup :: Pointer ptr a => ptr -> Heap -> Closure a
 heapLookup = aux undefined
     where
-	aux :: Pointer ptr a => a -> ptr -> Heap -> Closure a
-	aux x ptr heap = either error id $ do
-	    HpObj cl <- Map.lookup p heap `err` ("bad pointer: " ++ show p)
-	    gcast cl `err` unlines
-			[ "bad type in closure:"
-			, "expected " ++ show (typeOf x)
-			, "found    " ++ show (typeOfCl cl)
-			]
-	    where
-		p = toRawPtr ptr
+        aux :: Pointer ptr a => a -> ptr -> Heap -> Closure a
+        aux x ptr heap = either error id $ do
+            HpObj cl <- Map.lookup p heap `err` ("bad pointer: " ++ show p)
+            gcast cl `err` unlines
+                        [ "bad type in closure:"
+                        , "expected " ++ show (typeOf x)
+                        , "found    " ++ show (typeOfCl cl)
+                        ]
+            where
+                p = toRawPtr ptr
 
-		err Nothing s  = fail s
-		err (Just x) _ = return x
+                err Nothing s  = fail s
+                err (Just x) _ = return x
 
 heapUpdate :: Pointer ptr a => ptr -> Closure a -> Heap -> Heap
 heapUpdate ptr cl = Map.insert p (HpObj cl)
     where
-	p = toRawPtr ptr
+        p = toRawPtr ptr
 
 ---------------------------------------------------------------------------
 -- * Monadic functions
@@ -84,10 +84,10 @@ forceClosure p = do
     Evaluated x <- modClosure eval p
     return x
     where
-	eval cl@(Evaluated _) = return cl
-	eval (Unevaluated m)  = do
-	    x <- runTCClosure m
-	    return (Evaluated x)
+        eval cl@(Evaluated _) = return cl
+        eval (Unevaluated m)  = do
+            x <- runTCClosure m
+            return (Evaluated x)
 
 freshPtr :: Pointer ptr a => TC ptr
 freshPtr = do
@@ -137,23 +137,23 @@ updatePtrM f p = do
     modClosure (apply f) p
     return ()
     where
-	apply f (Evaluated x)	= do
-	    cl <- buildClosure (f x)
-	    return cl
-	apply f (Unevaluated m) =
-	    return $ Unevaluated m{ clAction = action }
-	    where
-		action = f =<< clAction m
+        apply f (Evaluated x)   = do
+            cl <- buildClosure (f x)
+            return cl
+        apply f (Unevaluated m) =
+            return $ Unevaluated m{ clAction = action }
+            where
+                action = f =<< clAction m
 
 ---------------------------------------------------------------------------
 -- * Lifting functions to pointers
 ---------------------------------------------------------------------------
 
 liftPtr :: (Pointer ptr a, Pointer ptr' b) =>
-	   (a -> b) -> ptr -> TC ptr'
+           (a -> b) -> ptr -> TC ptr'
 liftPtr f = liftPtrM (return . f)
 
 liftPtrM :: (Pointer ptr a, Pointer ptr' b) =>
-	    (a -> TC b) -> ptr -> TC ptr'
+            (a -> TC b) -> ptr -> TC ptr'
 liftPtrM f p = suspend $ f =<< forceClosure p
 

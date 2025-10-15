@@ -1,5 +1,5 @@
 
-module Utils 
+module Utils
     ( module Utils.Monad
     , on
     ) where

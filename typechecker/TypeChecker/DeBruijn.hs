@@ -18,14 +18,14 @@ instance (Pointer ptr a, DeBruijn a) => DeBruijn ptr where
 
 instance DeBruijn Type' where
     transform f n t = case t of
-	Pi a b	-> uncurry Pi  <$> trf (a,b)
+        Pi a b  -> uncurry Pi  <$> trf (a,b)
         RPi tel a -> uncurry RPi <$> transform f n' (tel, a)
           where n' = n + fromIntegral (length tel)
-	Fun a b -> uncurry Fun <$> trf (a,b)
-	El t	-> El <$> trf t
-	Set	-> return Set
-	where
-	    trf x = transform f n x
+        Fun a b -> uncurry Fun <$> trf (a,b)
+        El t    -> El <$> trf t
+        Set     -> return Set
+        where
+            trf x = transform f n x
 
 instance DeBruijn a => DeBruijn (RBind a) where
     transform f n (RBind x a) =
@@ -33,12 +33,12 @@ instance DeBruijn a => DeBruijn (RBind a) where
 
 instance DeBruijn Term' where
     transform f n t = case t of
-	Def f		  -> return $ Def f
-	Var m		  -> f n m
-	App s t		  -> uncurry App <$> trf (s,t)
-	Lam t		  -> Lam <$> trf t
-	where
-	    trf x = transform f n x
+        Def f             -> return $ Def f
+        Var m             -> f n m
+        App s t           -> uncurry App <$> trf (s,t)
+        Lam t             -> Lam <$> trf t
+        where
+            trf x = transform f n x
 
 instance (DeBruijn a, DeBruijn b) => DeBruijn (a,b) where
     transform f n (x,y) = (,) <$> transform f n x <*> transform f n y
@@ -52,8 +52,8 @@ instance DeBruijn a => DeBruijn [a] where
 raiseByFrom :: DeBruijn a => Integer -> Integer  -> a -> TC a
 raiseByFrom k = transform f
     where
-	f n m | m < n	  = return $ Var m
-	      | otherwise = return $ Var (m + k)
+        f n m | m < n     = return $ Var m
+              | otherwise = return $ Var (m + k)
 
 raiseBy :: DeBruijn a => Integer -> a -> TC a
 raiseBy k = raiseByFrom k 0
@@ -64,9 +64,9 @@ raise = raiseBy 1
 substUnder  :: DeBruijn a => Integer -> Term -> a -> TC a
 substUnder n0 t = transform f n0
     where
-	f n m | m < n	  = return $ Var m
-	      | m == n	  = forceClosure =<< raiseByFrom (n - n0) n0 t
-	      | otherwise = return $ Var (m - 1)
+        f n m | m < n     = return $ Var m
+              | m == n    = forceClosure =<< raiseByFrom (n - n0) n0 t
+              | otherwise = return $ Var (m - 1)
 
 subst :: DeBruijn a => Term -> Abs a -> TC a
 subst t = substUnder 0 t . absBody
